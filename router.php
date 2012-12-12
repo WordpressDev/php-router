@@ -30,73 +30,73 @@ class Route
 {
 
     /**
-	 * Register a GET route with the router.
-	 *
-	 * @param  string|array  $route
-	 * @param  mixed         $action
-	 * @return void
-	 */
+     * Register a GET route with the router.
+     *
+     * @param  string|array  $route
+     * @param  mixed         $action
+     * @return void
+     */
     public static function get($route, $action)
     {
         static::register('GET', $route, $action);
     }
 
     /**
-	 * Register a POST route with the router.
-	 *
-	 * @param  string|array  $route
-	 * @param  mixed         $action
-	 * @return void
-	 */
+     * Register a POST route with the router.
+     *
+     * @param  string|array  $route
+     * @param  mixed         $action
+     * @return void
+     */
     public static function post($route, $action)
     {
         static::register('POST', $route, $action);
     }
 
     /**
-	 * Register a PUT route with the router.
-	 *
-	 * @param  string|array  $route
-	 * @param  mixed         $action
-	 * @return void
-	 */
+     * Register a PUT route with the router.
+     *
+     * @param  string|array  $route
+     * @param  mixed         $action
+     * @return void
+     */
     public static function put($route, $action)
     {
         static::register('PUT', $route, $action);
     }
 
     /**
-	 * Register a DELETE route with the router.
-	 *
-	 * @param  string|array  $route
-	 * @param  mixed         $action
-	 * @return void
-	 */
+     * Register a DELETE route with the router.
+     *
+     * @param  string|array  $route
+     * @param  mixed         $action
+     * @return void
+     */
     public static function delete($route, $action)
     {
         static::register('DELETE', $route, $action);
     }
 
     /**
-	 * Register a route that handles any request method.
-	 *
-	 * @param  string|array  $route
-	 * @param  mixed         $action
-	 * @return void
-	 */
+     * Register a route that handles any request method.
+     *
+     * @param  string|array  $route
+     * @param  mixed         $action
+     * @return void
+     */
     public static function any($route, $action)
     {
         static::register('*', $route, $action);
     }
 
     /**
-	 * Register a HTTPS route with the router.
-	 *
-	 * @param  string        $method
-	 * @param  string|array  $route
-	 * @param  mixed         $action
-	 * @return void
-	 */
+     * Register a HTTPS route with the router.
+     *
+     * @param  string        $method
+     * @param  string|array  $route
+     * @param  mixed         $action
+     * @return void
+     */
     public static function secure($method, $route, $action)
     {
         // stop when not secure
@@ -124,22 +124,22 @@ class Router
 {
 
     /**
-	 * The URI for the current request.
-	 *
-	 * @var string
-	 */
+     * The URI for the current request.
+     *
+     * @var string
+     */
     public static $uri;
-    
+
     /**
-	 * Was the user routed yet?
-	 */
+     * Was the user routed yet?
+     */
     private static $routed = FALSE;
 
     /**
-	 * Get the URI for the current request.
-	 *
-	 * @return string
-	 */
+     * Get the URI for the current request.
+     *
+     * @return string
+     */
     public static function uri()
     {
         if (!is_null(static::$uri)) return static::$uri;
@@ -179,30 +179,30 @@ class Router
     }
 
     /**
-	 * Check if the the request is requested by HTTPS 
-	 *
-	 * @return bool
-	 */
+     * Check if the the request is requested by HTTPS 
+     *
+     * @return bool
+     */
     public static function secure()
     {
         return !empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off';
     }
 
     /**
-	 * Get the request method for the current request.
-	 *
-	 * @return string
-	 */
+     * Get the request method for the current request.
+     *
+     * @return string
+     */
     public static function method()
     {
         return strtoupper($_SERVER['REQUEST_METHOD']);
     }
-    
+
     /**
-	 * Match the route and execute the action
-	 * 
-	 * @return void
-	 */
+     * Match the route and execute the action
+     * 
+     * @return void
+     */
     public static function route($method, $route, $action)
     {
         // only route once
