@@ -1,5 +1,4 @@
 <?php
-
 /**
 * @name    PHP Router
 * @author  Jens Segers
@@ -26,6 +25,7 @@
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 * THE SOFTWARE.
 */
+
 class Route
 {
 
@@ -106,11 +106,35 @@ class Route
         static::register($method, $route, $action);
     }
 
+    /**
+     * Register a controller with the router.
+     *
+     * @param  string|array  $controllers
+     * @param  string|array  $defaults
+     * @return void
+     */
+    public static function controller($controllers, $defaults = 'index')
+    {
+        Router::controller($controllers, $defaults);
+    }
+
+    /**
+     * Register a route with the router.
+     * 
+     * @param  string        $method
+	 * @param  string|array  $route
+	 * @param  mixed         $action
+	 * @return void
+     */
     public static function register($method, $route, $action)
     {
-        // register multiple methods
-        if (is_array($method)) {
-            foreach ($method as $http) {
+        // If the developer is registering multiple request methods to handle
+		// the URI, we'll spin through each method and register the route
+		// for each of them along with each URI and action.
+        if (is_array($method))
+        {
+            foreach ($method as $http)
+            {
                 Router::route($http, $route, $action);
             }
             return;
@@ -150,32 +174,41 @@ class Router
      */
     public static function uri()
     {
-        if (!is_null(static::$uri)) return static::$uri;
+        if (!is_null(static::$uri))
+            return static::$uri;
         
-        if (isset($_SERVER['REQUEST_URI']) && isset($_SERVER['SCRIPT_NAME'])) {
-            // detect using REQUEST_URI, this works in most situations
+        if (isset($_SERVER['REQUEST_URI']) && isset($_SERVER['SCRIPT_NAME']))
+        {
+            // Detect using REQUEST_URI, this works in most situations.
             static::$uri = $_SERVER['REQUEST_URI'];
             
-            // remove equal parts with SCRIPT_NAME
-            if (strpos(static::$uri, $_SERVER['SCRIPT_NAME']) === 0) {
+            // Remove equal parts with SCRIPT_NAME.
+            if (strpos(static::$uri, $_SERVER['SCRIPT_NAME']) === 0)
+            {
                 static::$uri = substr(static::$uri, strlen($_SERVER['SCRIPT_NAME']));
-            } elseif (strpos(static::$uri, dirname($_SERVER['SCRIPT_NAME'])) === 0) {
+            }
+            elseif (strpos(static::$uri, dirname($_SERVER['SCRIPT_NAME'])) === 0)
+            {
                 static::$uri = substr(static::$uri, strlen(dirname($_SERVER['SCRIPT_NAME'])));
             }
             
-            // remove query string
-            if (($pos = strpos(static::$uri, '?')) !== false) {
+            // Remove the query string.
+            if (($pos = strpos(static::$uri, '?')) !== false)
+            {
                 static::$uri = substr(static::$uri, 0, $pos);
             }
-        } else if (isset($_SERVER['PATH_INFO'])) {
-            // detect URI using PATH_INFO
+        }
+        else if (isset($_SERVER['PATH_INFO']))
+        {
+            // Detect URI using PATH_INFO
             static::$uri = $_SERVER['PATH_INFO'];
         }
         
-        // remove leading and trailing slashes
+        // Remove leading and trailing slashes
         static::$uri = trim(static::$uri, '/');
         
-        if (static::$uri == '') {
+        if (static::$uri == '')
+        {
             static::$uri = '/';
         }
         
@@ -189,13 +222,17 @@ class Router
      */
     public static function base()
     {
-        if (!is_null(static::$base)) return static::$base;
+        if (!is_null(static::$base))
+            return static::$base;
         
-        if (isset($_SERVER['HTTP_HOST'])) {
+        if (isset($_SERVER['HTTP_HOST']))
+        {
             static::$base = Router::secure() ? 'https' : 'http';
             static::$base .= '://' . $_SERVER['HTTP_HOST'];
             static::$base .= str_replace(basename($_SERVER['SCRIPT_NAME']), '', $_SERVER['SCRIPT_NAME']);
-        } else {
+        }
+        else
+        {
             static::$base = 'http://localhost/';
         }
         
@@ -225,81 +262,165 @@ class Router
     /**
      * Match the route and execute the action
      * 
+     * @param  string  $method
+	 * @param  string  $route
+	 * @param  mixed   $action
      * @return void
      */
     public static function route($method, $route, $action)
     {
-        // only route once
-        if (static::$routed) {
+        // If a previous route was matched, we can skip all routes with a lower
+        // priority.
+        if (static::$routed)
+        {
             return;
         }
         
-        // validate the request method
-        if ($method != '*' && strtoupper($method) != static::method()) {
+        // We can ignore this route if the request method does not match
+        if ($method != '*' && strtoupper($method) != static::method())
+        {
             return;
         }
         
-        // remove leading and trailing slashes
         $route = trim($route, '/');
         
-        if ($route == '') {
+        if ($route == '')
+        {
             $route = '/';
         }
         
-        // route contains wildcards
-        if (strpos($route, '(') !== FALSE) {
-            $patterns = $patterns = $patterns = array(
-                '(:num)' => '([0-9]+)',
-                '(:any)' => '([a-zA-Z0-9\.\-_%=]+)',
-                '(:all)' => '(.*)',
-                '/(:num?)' => '(?:/([0-9]+))?',
-                '/(:any?)' => '(?:/([a-zA-Z0-9\.\-_%=]+))?',
+        // Of course literal route matches are the quickest to find, so we will
+        // check for those first. If the destination key exists in the routes
+        // array we can just return that route now.
+        if ($route == static::uri())
+        {
+            static::call($action);
+            return;
+        }
+        
+        // We only need to check routes with regular expression since all others
+        // would have been able to be matched by the search for literal matches
+        // we just did before we started searching.
+        if (strpos($route, '(') !== FALSE)
+        {
+            $patterns = array(
+                '(:num)' => '([0-9]+)', 
+                '(:any)' => '([a-zA-Z0-9\.\-_%=]+)', 
+                '(:all)' => '(.*)', 
+                '/(:num?)' => '(?:/([0-9]+))?', 
+                '/(:any?)' => '(?:/([a-zA-Z0-9\.\-_%=]+))?', 
                 '/(:all?)' => '(?:/(.*))?'
             );
             
-            foreach ($patterns as $pattern => $replace) {
-                $route = str_replace($pattern, $replace, $route);
+            $route = str_replace(array_keys($patterns), array_values($patterns), $route);
+            
+            // If we get a match we'll return the route and slice off the first
+            // parameter match, as preg_match sets the first array item to the
+            // full-text match of the pattern.
+            if (preg_match('#^' . $route . '$#', static::uri(), $parameters))
+            {
+                static::call($action, array_slice($parameters, 1));
+                return;
             }
         }
-        
-        // build regular expression pattern
-        $pattern = '#^' . $route . '$#';
-        
-        // match pattern
-        if (preg_match($pattern, static::uri(), $parameters)) {
-            $parameters = array_slice($parameters, 1);
+    }
+
+    /**
+     * Execute an action matched by the router
+     *
+     * @return void
+     */
+    private static function call($action, $parameters = array())
+    {
+        if (is_callable($action))
+        {
+            // The action is an anonymous function, let's execute it.
+            call_user_func_array($action, $parameters);
+        }
+        else if (is_string($action) && strpos($action, '@'))
+        {
+            list($controller, $method) = explode('@', $action);
+            $class = basename($controller);
             
-            if (is_callable($action)) {
-                // execute anonymous function
-                call_user_func_array($action, $parameters);
-            } else if (is_string($action) && strpos($action, '@')) {
-                // execute class@method
-                list($class, $method) = explode('@', $action);
-                
-                // search for a class file
-                if (!class_exists($class)) {
-                    // locations to look for a class file
-                    $locations = array("$class.php", "controllers/$class.php");
-                    
-                    // check all locations for their existence
-                    foreach ($locations as $location) {
-                        if (file_exists($location)) {
-                            include ($location);
-                            break;
-                        }
+            // Controller delegates may use back-references to the action parameters,
+            // which allows the developer to setup more flexible routes to various
+            // controllers with much less code than would be usual.
+            if (strpos($method, '(:') !== FALSE)
+            {
+                foreach ($parameters as $key => $value)
+                {
+                    $method = str_replace('(:' . ($key + 1) . ')', $value, $method, $count);
+                    if ($count > 0)
+                    {
+                        unset($parameters[$key]);
                     }
                 }
-                
-                // class was not found
-                if (!class_exists($class))
-                    return;
-                
-                $instance = new $class();
-                call_user_func_array(array($instance, $method), $parameters);
             }
             
-            // user was routed
-            static::$routed = TRUE;
+            // Default controller method if left empty.
+            if (!$method)
+            {
+                $method = 'index';
+            }
+            
+            // Load the controller class file if needed.
+            if (!class_exists($class))
+            {
+                if (file_exists("controllers/$controller.php"))
+                {
+                    include ("controllers/$controller.php");
+                }
+            }
+            
+            // The controller class was still not found. Let the next routes handle the
+            // request.
+            if (!class_exists($class))
+            {
+                return;
+            }
+            
+            $instance = new $class();
+            call_user_func_array(array($instance, $method), $parameters);
+        }
+        
+        // The current route was matched. Ignore new routes.
+        static::$routed = TRUE;
+    }
+
+    /**
+     * Match the route with a controller and execute a method
+     *
+	 * @param  string|array  $controllers
+	 * @param  string        $defaults
+     * @return void
+     */
+    public static function controller($controllers, $defaults = 'index')
+    {
+        foreach ((array) $controllers as $controller)
+        {
+            // If the current URI does not match this controller we can simply skip
+            // this route.
+            if (strpos(strtolower(static::uri()), strtolower($controller)) === 0)
+            {
+                
+                // First we need to replace the dots with slashes in the controller name
+                // so that it is in directory format. The dots allow the developer to use
+                // a cleaner syntax when specifying the controller. We will also grab the
+                // root URI for the controller's bundle.
+                $controller = str_replace('.', '/', $controller);
+                
+                // Automatically passes a number of arguments to the controller method
+                $wildcards = str_repeat('/(:any?)', 6);
+                
+                // Once we have the path and root URI we can build a simple route for
+                // the controller that should handle a conventional controller route
+                // setup of controller/method/segment/segment, etc.
+                $pattern = trim($controller . $wildcards, '/');
+                
+                // Rregister the controller route with a wildcard method so it is 
+                // available on every request method.
+                static::route('*', $pattern, "$controller@(:1)");
+            }
         }
     }
 
