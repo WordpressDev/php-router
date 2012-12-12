@@ -24,9 +24,9 @@ Registering a route that is valid for any HTTP verb (GET, POST, PUT, and DELETE)
 		return "Hello World!";
 	});
 
-	Registering routes for other request methods:
+Registering routes for other request methods:
 
-		Route::post('user', function()
+	Route::post('user', function()
 	{
 		//
 	});

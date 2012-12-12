@@ -1,6 +1,6 @@
 <?php
 /**
-* @name    Router
+* @name    PHP Router
 * @author  Jens Segers
 * @link    http://www.jenssegers.be
 * @license MIT License Copyright (c) 2012 Jens Segers
@@ -155,7 +155,7 @@ class Router
                 static::$uri = substr(static::$uri, strlen(dirname($_SERVER['SCRIPT_NAME'])));
             }
             
-			// remove query string
+            // remove query string
             if (($pos = strpos(static::$uri, '?')) !== false) {
                 static::$uri = substr(static::$uri, 0, $pos);
             }
