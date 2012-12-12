@@ -94,3 +94,14 @@ Controller classes can be auto-loaded as long as they are located in the base di
 Registering a route that points to a controller action:
 
 	Route::get('welcome', 'home@index');
+
+Extras
+------
+
+Get your site base URL:
+
+	Router::base();
+
+Get the current URI:
+
+	Router::uri();

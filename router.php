@@ -1,4 +1,5 @@
 <?php
+
 /**
 * @name    PHP Router
 * @author  Jens Segers
@@ -25,7 +26,6 @@
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 * THE SOFTWARE.
 */
-
 class Route
 {
 
@@ -118,6 +118,7 @@ class Route
         
         Router::route($method, $route, $action);
     }
+
 }
 
 class Router
@@ -129,6 +130,13 @@ class Router
      * @var string
      */
     public static $uri;
+
+    /**
+     * The base URL for the current request.
+     *
+     * @var string
+     */
+    public static $base;
 
     /**
      * Was the user routed yet?
@@ -159,13 +167,9 @@ class Router
             if (($pos = strpos(static::$uri, '?')) !== false) {
                 static::$uri = substr(static::$uri, 0, $pos);
             }
-        } 
-        else if (isset($_SERVER['PATH_INFO'])) {
+        } else if (isset($_SERVER['PATH_INFO'])) {
             // detect URI using PATH_INFO
             static::$uri = $_SERVER['PATH_INFO'];
-        } else if (isset($_SERVER['ORIG_PATH_INFO'])) {
-            // detect URI using ORIG_PATH_INFO
-            static::$uri = $_SERVER['ORIG_PATH_INFO'];
         }
         
         // remove leading and trailing slashes
@@ -176,6 +180,26 @@ class Router
         }
         
         return static::$uri;
+    }
+
+    /**
+     * Get the base URL for the current request.
+     *
+     * @return string
+     */
+    public static function base()
+    {
+        if (!is_null(static::$base)) return static::$base;
+        
+        if (isset($_SERVER['HTTP_HOST'])) {
+            static::$base = Router::secure() ? 'https' : 'http';
+            static::$base .= '://' . $_SERVER['HTTP_HOST'];
+            static::$base .= str_replace(basename($_SERVER['SCRIPT_NAME']), '', $_SERVER['SCRIPT_NAME']);
+        } else {
+            static::$base = 'http://localhost/';
+        }
+        
+        return static::$base;
     }
 
     /**
@@ -224,7 +248,7 @@ class Router
         
         // route contains wildcards
         if (strpos($route, '(') !== FALSE) {
-            $patterns = array(
+            $patterns = $patterns = $patterns = array(
                 '(:num)' => '([0-9]+)',
                 '(:any)' => '([a-zA-Z0-9\.\-_%=]+)',
                 '(:all)' => '(.*)',
@@ -255,15 +279,12 @@ class Router
                 // search for a class file
                 if (!class_exists($class)) {
                     // locations to look for a class file
-                    $locations = array(
-                        "$class.php",
-                        "controllers/$class.php"
-                    );
+                    $locations = array("$class.php", "controllers/$class.php");
                     
                     // check all locations for their existence
                     foreach ($locations as $location) {
                         if (file_exists($location)) {
-                            include($location);
+                            include ($location);
                             break;
                         }
                     }
@@ -281,4 +302,5 @@ class Router
             static::$routed = TRUE;
         }
     }
+
 }
