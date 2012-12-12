@@ -7,6 +7,11 @@ This is a simple PHP Router with a syntax comparable to Laravel, that allows you
 
 **Note**: Routes will run in the order they are defined. Higher routes will always take precedence over lower ones.
 
+Installation
+------------
+
+Place .htaccess and router.php in your website base directory. Create an index.php file, include the router.php file and start defining routes. How to do this is explained below.
+
 Example
 -------
 
