@@ -23,7 +23,7 @@ Registering a route that is valid for any HTTP verb (GET, POST, PUT, and DELETE)
 	{
 		return "Hello World!";
 	});
-		
+
 	Registering routes for other request methods:
 
 		Route::post('user', function()
@@ -40,21 +40,21 @@ Registering a route that is valid for any HTTP verb (GET, POST, PUT, and DELETE)
 	{
 		//
 	});
-	
+
 Registering a single URI for multiple HTTP verbs:
 
 	Route::register(array('GET', 'POST'), $uri, function()
 	{
 		//
 	});
-	
+
 Registering a route that is only valid for HTTPS requests:
 
 	Route::secure('GET', '/', function()
 	{
 		//
 	});
-	
+
 Wildcards
 ---------
 
