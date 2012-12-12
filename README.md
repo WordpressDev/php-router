@@ -1,7 +1,7 @@
 PHP Router
 ==========
 
-This is a simple PHP Router with a syntax comparable to Laravel so that you can routes in an intuitive way. It supports auto-loading of controller classes from the base directory or a 'controllers' directory.
+This is a simple PHP Router with a syntax comparable to Laravel, that allows you to define routes in an intuitive way. It supports auto-loading of controller classes from the base directory or a 'controllers' directory.
 
 *Since this router is based on the Laravel router syntax, some code is reused.*
 
