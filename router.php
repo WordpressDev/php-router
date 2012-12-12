@@ -1,6 +1,6 @@
 <?php
 /**
-* @name    PHP Router
+* @name    Router
 * @author  Jens Segers
 * @link    http://www.jenssegers.be
 * @license MIT License Copyright (c) 2012 Jens Segers
@@ -154,24 +154,22 @@ class Router
             } elseif (strpos(static::$uri, dirname($_SERVER['SCRIPT_NAME'])) === 0) {
                 static::$uri = substr(static::$uri, strlen(dirname($_SERVER['SCRIPT_NAME'])));
             }
+            
+			// remove query string
+            if (($pos = strpos(static::$uri, '?')) !== false) {
+                static::$uri = substr(static::$uri, 0, $pos);
+            }
         } 
         else if (isset($_SERVER['PATH_INFO'])) {
             // detect URI using PATH_INFO
-            static::$uri = trim($_SERVER['PATH_INFO'], '/');
-            
-            // add QUERY_STRING to URI
-            if (isset($_SERVER['QUERY_STRING']) && $_SERVER['QUERY_STRING']) {
-                static::$uri .= '?' . $_SERVER['QUERY_STRING'];
-            }
+            static::$uri = $_SERVER['PATH_INFO'];
         } else if (isset($_SERVER['ORIG_PATH_INFO'])) {
             // detect URI using ORIG_PATH_INFO
-            static::$uri = trim($_SERVER['ORIG_PATH_INFO'], '/');
-            
-            // add QUERY_STRING to URI
-            if (isset($_SERVER['QUERY_STRING']) && $_SERVER['QUERY_STRING']) {
-                static::$uri .= '?' . $_SERVER['QUERY_STRING'];
-            }
+            static::$uri = $_SERVER['ORIG_PATH_INFO'];
         }
+        
+        // remove leading and trailing slashes
+        static::$uri = trim(static::$uri, '/');
         
         if (static::$uri == '') {
             static::$uri = '/';
@@ -217,7 +215,7 @@ class Router
             return;
         }
         
-        // remove outer slashes
+        // remove leading and trailing slashes
         $route = trim($route, '/');
         
         if ($route == '') {
@@ -229,7 +227,10 @@ class Router
             $patterns = array(
                 '(:num)' => '([0-9]+)',
                 '(:any)' => '([a-zA-Z0-9\.\-_%=]+)',
-                '(:all)' => '(.*)'
+                '(:all)' => '(.*)',
+                '/(:num?)' => '(?:/([0-9]+))?',
+                '/(:any?)' => '(?:/([a-zA-Z0-9\.\-_%=]+))?',
+                '/(:all?)' => '(?:/(.*))?'
             );
             
             foreach ($patterns as $pattern => $replace) {
