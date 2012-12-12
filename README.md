@@ -1,9 +1,9 @@
 PHP Router
 ==========
 
-This is a simple PHP Router with a syntax comparable to Laravel, that allows you to define routes in an intuitive way. It supports auto-loading of controller classes from the base directory or a 'controllers' directory. Anonymous functions from PHP 5.3 can be used as callbacks for matching routes, make sure to check if your hosting supports PHP 5.3 or higher.
+This is a simple PHP Router with a syntax comparable to Laravel, that allows you to define routes in an intuitive way. It supports auto-loading of controller classes from the controllers directory. Anonymous functions from PHP 5.3 can be used as callbacks for matching routes, make sure to check if your hosting supports PHP 5.3 or higher.
 
-*Since this router is based on the Laravel router syntax, some code is reused.*
+*Since this router is based on the Laravel router syntax, some code is reused and this documentation is the same as on the Laravel website (http://laravel.com/docs/routing).*
 
 **Note**: Routes will run in the order they are defined. Higher routes will always take precedence over lower ones.
 
@@ -89,7 +89,19 @@ Allowing a URI segment to be optional:
 Controller Routing
 ------------------
 
-Controller classes can be auto-loaded as long as they are located in the base directory or a 'controllers' directory.
+Controllers provide another way to manage your application logic. It is important to be aware that all routes must be explicitly defined, including routes to controllers. This means that controller methods that have not been exposed through route registration cannot be accessed. It's possible to automatically expose all methods within a controller using controller route registration. 
+
+Registering the "home" controller with the Router:
+
+	Route::controller('home');
+	
+Registering several controllers with the router:
+
+	Route::controller(array('dashboard.panel', 'admin'));
+	
+This convention is similar to that employed by CodeIgniter and other popular frameworks, where the first segment is the controller name, the second is the method, and the remaining segments are passed to the method as arguments. If no method segment is present, the "index" method will be used.
+
+This routing convention may not be desirable for every situation, so you may also explicitly route URIs to controller actions using a simple, intuitive syntax.
 
 Registering a route that points to a controller action:
 

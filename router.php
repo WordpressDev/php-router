@@ -122,15 +122,15 @@ class Route
      * Register a route with the router.
      * 
      * @param  string        $method
-	 * @param  string|array  $route
-	 * @param  mixed         $action
-	 * @return void
+     * @param  string|array  $route
+     * @param  mixed         $action
+     * @return void
      */
     public static function register($method, $route, $action)
     {
         // If the developer is registering multiple request methods to handle
-		// the URI, we'll spin through each method and register the route
-		// for each of them along with each URI and action.
+        // the URI, we'll spin through each method and register the route
+        // for each of them along with each URI and action.
         if (is_array($method))
         {
             foreach ($method as $http)
@@ -140,7 +140,9 @@ class Route
             return;
         }
         
-        Router::route($method, $route, $action);
+        foreach ((array) $route as $uri) {
+            Router::route($method, $uri, $action);
+        }
     }
 
 }
@@ -220,10 +222,10 @@ class Router
      *
      * @return string
      */
-    public static function base()
+    public static function base($uri = '')
     {
         if (!is_null(static::$base))
-            return static::$base;
+            return static::$base . $uri;
         
         if (isset($_SERVER['HTTP_HOST']))
         {
@@ -236,7 +238,7 @@ class Router
             static::$base = 'http://localhost/';
         }
         
-        return static::$base;
+        return static::$base . $uri;
     }
 
     /**
@@ -263,8 +265,8 @@ class Router
      * Match the route and execute the action
      * 
      * @param  string  $method
-	 * @param  string  $route
-	 * @param  mixed   $action
+     * @param  string  $route
+     * @param  mixed   $action
      * @return void
      */
     public static function route($method, $route, $action)
@@ -328,6 +330,8 @@ class Router
     /**
      * Execute an action matched by the router
      *
+     * @param  mixed   $action
+     * @param  mixed   $parameters
      * @return void
      */
     private static function call($action, $parameters = array())
@@ -390,8 +394,8 @@ class Router
     /**
      * Match the route with a controller and execute a method
      *
-	 * @param  string|array  $controllers
-	 * @param  string        $defaults
+     * @param  string|array  $controllers
+     * @param  string        $defaults
      * @return void
      */
     public static function controller($controllers, $defaults = 'index')
@@ -402,7 +406,6 @@ class Router
             // this route.
             if (strpos(strtolower(static::uri()), strtolower($controller)) === 0)
             {
-                
                 // First we need to replace the dots with slashes in the controller name
                 // so that it is in directory format. The dots allow the developer to use
                 // a cleaner syntax when specifying the controller. We will also grab the
