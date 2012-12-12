@@ -339,7 +339,7 @@ class Router
         if (is_callable($action))
         {
             // The action is an anonymous function, let's execute it.
-            call_user_func_array($action, $parameters);
+            echo call_user_func_array($action, $parameters);
         }
         else if (is_string($action) && strpos($action, '@'))
         {
@@ -384,7 +384,7 @@ class Router
             }
             
             $instance = new $class();
-            call_user_func_array(array($instance, $method), $parameters);
+            echo call_user_func_array(array($instance, $method), $parameters);
         }
         
         // The current route was matched. Ignore new routes.
