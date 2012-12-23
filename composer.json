@@ -4,6 +4,7 @@
     "description": "A PHP router with a syntax comparable to Laravel",
     "keywords": ["router"],
     "license": "MIT",
+    "homepage": "http://jenssegers.be",
     "authors": [
         {
             "name": "Jens Segers"
