@@ -1,5 +1,5 @@
 {
-    "name": "jenssegers/php-router",
+    "name": "jenssegers/router",
     "type": "library",
     "description": "A PHP router with a syntax comparable to Laravel",
     "keywords": ["router"],
