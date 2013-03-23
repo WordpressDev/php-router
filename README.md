@@ -21,6 +21,15 @@ Install using composer or include Router.php. For cleaner urls use the following
 		RewriteRule ^(.*)$ index.php/$1 [L]
 	</IfModule>
 
+Add the following to the top of your index page:
+
+	<?php require('vendor/autoload.php');
+
+	use Jenssegers\Router,
+		Jenssegers\Route;
+
+This will autoload the routing files. If you want to use this without composer you will have to include the files yourself.
+
 Example
 -------
 
