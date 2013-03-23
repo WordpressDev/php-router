@@ -1,4 +1,5 @@
-<?php
+<?php namespace Jenssegers;
+
 /**
 * @name    PHP Router
 * @author  Jens Segers
