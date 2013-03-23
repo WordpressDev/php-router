@@ -15,7 +15,8 @@
     },
     "autoload": {
         "psr-0": {
-            "Jenssegers\\Router": "src/"
+            "Jenssegers\\Router": "src/",
+            "Jenssegers\\Route": "src/"
         }
     }
 }
