@@ -10,16 +10,13 @@ This is a simple PHP Router with a syntax comparable to Laravel, that allows you
 Installation
 ------------
 
-Install using composer or include Router.php. For cleaner urls use the following .htaccess file:
+To install using composer, add `jenssegers/router` as a requirement to `composer.json`:
 
-	<IfModule mod_rewrite.c>
-		Options +FollowSymLinks
-		RewriteEngine On
-
-		RewriteCond %{REQUEST_FILENAME} !-f
-		RewriteCond %{REQUEST_FILENAME} !-d
-		RewriteRule ^(.*)$ index.php/$1 [L]
-	</IfModule>
+	{
+	    "require": {
+	        "jenssegers/router": "dev-master"
+	    }
+	}
 
 Add the following to the top of your index page:
 
@@ -29,6 +26,17 @@ Add the following to the top of your index page:
 		Jenssegers\Route;
 
 This will autoload the routing files. If you want to use this without composer you will have to include the files yourself.
+
+For cleaner urls use the following .htaccess file:
+
+	<IfModule mod_rewrite.c>
+		Options +FollowSymLinks
+		RewriteEngine On
+
+		RewriteCond %{REQUEST_FILENAME} !-f
+		RewriteCond %{REQUEST_FILENAME} !-d
+		RewriteRule ^(.*)$ index.php/$1 [L]
+	</IfModule>
 
 Example
 -------
