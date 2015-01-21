@@ -1,5 +1,5 @@
 {
-    "name": "jenssegers/router",
+    "name": "seytar/php-router",
     "description": "The Laravel router, for use outside of the Laravel framework",
     "keywords": ["laravel", "router"],
     "license": "MIT",
