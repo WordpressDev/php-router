@@ -63,7 +63,7 @@ class Router {
         if (static::$bootstrapped) return;
 
         // Load helper functions.
-        require_once 'vendor/illuminate/support/Illuminate/Support/helpers.php';
+        require_once __DIR__ . '/../../../illuminate/support/Illuminate/Support/helpers.php';
 
         // Directories.
         $basePath = str_finish(realpath(__DIR__ . '/..'), '/');
