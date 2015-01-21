@@ -1,4 +1,6 @@
-<?php namespace Jenssegers\Routing;
+<?php
+
+namespace Jenssegers\Routing;
 
 use Illuminate\Container\Container;
 use Illuminate\Support\ClassLoader;
@@ -37,14 +39,14 @@ class Router {
      * @var array
      */
     protected static $aliases = array(
-        'Router'          => 'Jenssegers\Routing\Router',
-        'App'             => 'Illuminate\Support\Facades\App',
-        'Input'           => 'Illuminate\Support\Facades\Input',
-        'Redirect'        => 'Illuminate\Support\Facades\Redirect',
-        'Request'         => 'Illuminate\Support\Facades\Request',
-        'Response'        => 'Illuminate\Support\Facades\Response',
-        'Route'           => 'Illuminate\Support\Facades\Route',
-        'URL'             => 'Illuminate\Support\Facades\URL'
+        'Router' => 'Jenssegers\Routing\Router',
+        'App' => 'Illuminate\Support\Facades\App',
+        'Input' => 'Illuminate\Support\Facades\Input',
+        'Redirect' => 'Illuminate\Support\Facades\Redirect',
+        'Request' => 'Illuminate\Support\Facades\Request',
+        'Response' => 'Illuminate\Support\Facades\Response',
+        'Route' => 'Illuminate\Support\Facades\Route',
+        'URL' => 'Illuminate\Support\Facades\URL'
     );
 
     /**
@@ -57,10 +59,11 @@ class Router {
         $this->bootstrap();
     }
 
-    public static function bootstrap()
+    public static function bootstrap($errorCallback)
     {
         // Only bootstrap once.
-        if (static::$bootstrapped) return;
+        if (static::$bootstrapped)
+            return;
 
         // Load helper functions.
         require_once __DIR__ . '/../../../illuminate/support/Illuminate/Support/helpers.php';
@@ -110,7 +113,7 @@ class Router {
         }
 
         // Dispatch on shutdown.
-        register_shutdown_function('Jenssegers\Routing\Router::dispatch');
+        register_shutdown_function('Jenssegers\Routing\Router::dispatch', $errorCallback);
 
         // Mark bootstrapped.
         static::$bootstrapped = true;
@@ -121,7 +124,7 @@ class Router {
      *
      * @return \Illuminate\Http\Response
      */
-    public static function dispatch()
+    public static function dispatch($callback)
     {
         // Only dispatch once.
         if (static::$dispatched) return;
@@ -129,11 +132,15 @@ class Router {
         // Get the request.
         $request = static::$container['request'];
 
-        // Pass the request to the router.
-        $response = static::$container['router']->dispatch($request);
+        try {
+            // Pass the request to the router.
+            $response = static::$container['router']->dispatch($request);
 
-        // Send the response.
-        $response->send();
+            // Send the response.
+            $response->send();
+        } catch (\Symfony\Component\HttpKernel\Exception\NotFoundHttpException $ex) {
+            call_user_func($callback, $ex);
+        }
 
         // Mark as dispatched.
         static::$dispatched = true;
