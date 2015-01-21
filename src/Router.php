@@ -1,6 +1,4 @@
-<?php
-
-namespace Jenssegers\Routing;
+<?php namespace Seytar\Routing;
 
 use Illuminate\Container\Container;
 use Illuminate\Support\ClassLoader;
@@ -39,7 +37,7 @@ class Router {
      * @var array
      */
     protected static $aliases = array(
-        'Router' => 'Jenssegers\Routing\Router',
+        'Router' => 'Seytar\Routing\Router',
         'App' => 'Illuminate\Support\Facades\App',
         'Input' => 'Illuminate\Support\Facades\Input',
         'Redirect' => 'Illuminate\Support\Facades\Redirect',
@@ -113,7 +111,7 @@ class Router {
         }
 
         // Dispatch on shutdown.
-        register_shutdown_function('Jenssegers\Routing\Router::dispatch', $errorCallback);
+        register_shutdown_function('Seytar\Routing\Router::dispatch', $errorCallback);
 
         // Mark bootstrapped.
         static::$bootstrapped = true;

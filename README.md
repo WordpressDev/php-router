@@ -10,7 +10,7 @@ Add the package to your `composer.json` and run `composer update`.
 
     {
         "require": {
-            "jenssegers/router": "*"
+            "seytar/router": "*"
         }
     }
 
@@ -21,7 +21,7 @@ To start using the router you will need to bootstrap it like this:
 
 	require 'vendor/autoload.php';
 
-	use Jenssegers\Routing\Router;
+	use Seytar\Routing\Router;
 
 	Router::bootstrap();
 

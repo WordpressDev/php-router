@@ -3,11 +3,11 @@
     "description": "The Laravel router, for use outside of the Laravel framework",
     "keywords": ["laravel", "router"],
     "license": "MIT",
-    "homepage": "http://jenssegers.be",
+    "homepage": "https://github.com/seytar/php-router",
     "authors": [
         {
-            "name": "Jens Segers",
-            "homepage": "http://jenssegers.be"
+            "name": "Saadettin Sivaz",
+            "homepage": "https://github.com/seytar"
         }
     ],
     "require": {
@@ -16,7 +16,7 @@
     },
     "autoload": {
         "psr-4": {
-            "Jenssegers\\Routing\\": "src/"
+            "Seytar\\Routing\\": "src/"
         }
     }
 }
