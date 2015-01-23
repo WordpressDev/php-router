@@ -23,7 +23,10 @@ To start using the router you will need to bootstrap it like this:
 
 	use Seytar\Routing\Router;
 
-	Router::bootstrap();
+	Router::bootstrap(function($ex) {
+            header('Content-Type: text/html; charset=utf-8');
+            echo '404 - Page Not Found';
+        });
 
 Once this has been done, you can define any route like you would in Laravel:
 
