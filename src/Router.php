@@ -57,7 +57,7 @@ class Router {
         $this->bootstrap();
     }
 
-    public static function bootstrap($errorCallback)
+    public static function bootstrap($errorCallbacks)
     {
         // Only bootstrap once.
         if (static::$bootstrapped)
@@ -111,7 +111,7 @@ class Router {
         }
 
         // Dispatch on shutdown.
-        register_shutdown_function('Seytar\Routing\Router::dispatch', $errorCallback);
+        register_shutdown_function('Seytar\Routing\Router::dispatch', $errorCallbacks);
 
         // Mark bootstrapped.
         static::$bootstrapped = true;
@@ -122,7 +122,7 @@ class Router {
      *
      * @return \Illuminate\Http\Response
      */
-    public static function dispatch($callback)
+    public static function dispatch($callbacks)
     {
         // Only dispatch once.
         if (static::$dispatched) return;
@@ -137,6 +137,10 @@ class Router {
             // Send the response.
             $response->send();
         } catch (\Symfony\Component\HttpKernel\Exception\NotFoundHttpException $ex) {
+			$callback = is_array($callbacks) ? $callbacks['not_found'] : $callbacks;
+            call_user_func($callback, $ex);
+        } catch (\Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException $ex) {
+			$callback = is_array($callbacks) ? $callbacks['not_allowed'] : $callbacks;
             call_user_func($callback, $ex);
         }
 
