@@ -11,8 +11,8 @@
         }
     ],
     "require": {
-        "illuminate/routing": "4.*",
-        "illuminate/events": "4.*"
+        "illuminate/routing": "5.*",
+        "illuminate/events": "5.*"
     },
     "autoload": {
         "psr-4": {
