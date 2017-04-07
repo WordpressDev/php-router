@@ -4,14 +4,14 @@ namespace Seytar\Routing;
 
 use Illuminate\Container\Container;
 use Illuminate\Events\EventServiceProvider;
-use Illuminate\Http\Request;
-use Illuminate\Http\Response as Response2;
+use Illuminate\Http\Request as HttpRequest;
+use Illuminate\Http\Response as HttpResponse;
 use Illuminate\Routing\RoutingServiceProvider;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Facade;
 use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Redirect;
-use Illuminate\Support\Facades\Request as Request2;
+use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\URL;
@@ -49,7 +49,7 @@ class Router {
 		'App'		 => App::class,
 		'Input'		 => Input::class,
 		'Redirect'	 => Redirect::class,
-		'Request'	 => Request2::class,
+		'Request'	 => Request::class,
 		'Response'	 => Response::class,
 		'Route'		 => Route::class,
 		'URL'		 => URL::class
@@ -91,10 +91,10 @@ class Router {
 		$app['env'] = 'production';
 
 		// Enable HTTP Method Override.
-		Request::enableHttpMethodParameterOverride();
+		HttpRequest::enableHttpMethodParameterOverride();
 
 		// Create the request.
-		$app['request'] = Request::createFromGlobals();
+		$app['request'] = HttpRequest::createFromGlobals();
 
 		// Register services.
 		with(new EventServiceProvider($app))->register();
@@ -115,7 +115,7 @@ class Router {
 	/**
 	 * Dispatch the current request to the application.
 	 *
-	 * @return Response2
+	 * @return HttpResponse
 	 */
 	public static function dispatch()
 	{
