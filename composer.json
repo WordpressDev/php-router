@@ -1,22 +1,22 @@
 {
-    "name": "jenssegers/router",
-    "type": "library",
-    "description": "A PHP router with a syntax comparable to Laravel",
-    "keywords": ["router"],
+    "name": "seytar/php-router",
+    "description": "The Laravel router, for use outside of the Laravel framework",
+    "keywords": ["laravel", "router"],
     "license": "MIT",
-    "homepage": "http://jenssegers.be",
+    "homepage": "https://github.com/seytar/php-router",
     "authors": [
         {
-            "name": "Jens Segers"
+            "name": "Saadettin Sivaz",
+            "homepage": "https://github.com/seytar"
         }
     ],
     "require": {
-        "php": ">=5.3.0"
+        "illuminate/routing": "5.*",
+        "illuminate/events": "5.*"
     },
     "autoload": {
-        "psr-0": {
-            "Jenssegers\\Router": "src/",
-            "Jenssegers\\Route": "src/"
+        "psr-4": {
+            "Seytar\\Routing\\": "src/"
         }
     }
 }
